@@ -72,7 +72,6 @@ object ASCIIart extends App{
                 printHelper(seq.tail, seq.tail.head)
             }
         }
-
         printHelper(seq, seq.head)
     }
 
