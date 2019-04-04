@@ -31,23 +31,30 @@ object ASCIIart extends App{
 
     def matrixConvert(seq:Seq[Seq[Int]]): Seq[Seq[Char]] = {
         @tailrec
-        def convertHelper(seq: Seq[Seq[Int]], insideSeq: Seq[Int], tempOut:Seq[Char], output: Seq[Seq[Char]]) : Seq[Seq[Char]] = {
-            val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao#MW&8%B@$"
-
+        def convertHelper(seq: Seq[Seq[Int]], insideSeq: Seq[Int], tempOut: Seq[Char], output: Seq[Seq[Char]]) : Seq[Seq[Char]] = {
+            val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+           
             seq match {
                 case Seq() => output
-                case Seq(head) => head match {
-                    case Seq() => convertHelper(Seq(), Seq(), tempOut, output)
-                    case _ => convertHelper(seq)
-                }
+                // single element handler
+                case Seq(upperHead) => insideSeq match {
+                    case Seq() => convertHelper(Seq(), Seq(), tempOut, output :+ (tempOut :+ '\n'))
+                    case (head +: tail) => convertHelper(seq, tail, tempOut :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt), output)
+                    }
+                // multiple element handler
+                case (upperHead +: upperTail) => insideSeq match {
+                    case Seq() => convertHelper(upperTail, upperTail.head, Seq.empty[Char], output :+ (tempOut :+ '\n'))
+                    case (head +: tail) => convertHelper(seq, tail, tempOut :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt), output)
+                    }
+
             }
         }
-        convertHelper(seq, seq.head, 0, Seq.empty[Char], Seq.empty[Seq[Char]])
+        convertHelper(seq, seq.head, Seq.empty[Char], Seq.empty[Seq[Char]])
     }
 
     def printMatrix[A](seq: Seq[Seq[A]]): Unit = {
         @tailrec
-        def printHelper(seq: Seq[Seq[A]], tempSeq: Seq[A]):  Unit = seq.tail.isEmpty match {
+        def printHelper(seq: Seq[Seq[A]], tempSeq: Seq[A]:  Unit = seq.tail.isEmpty match {
             case true => {
                 print(seq.head.mkString(""))
                 return ()
