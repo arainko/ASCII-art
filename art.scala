@@ -31,30 +31,15 @@ object ASCIIart extends App{
 
     def matrixConvert(seq:Seq[Seq[Int]]): Seq[Seq[Char]] = {
         @tailrec
-        def convertHelper(seq: Seq[Seq[Int]], insideSeq: Seq[Int], index:Int, tempOut:Seq[Char], output: Seq[Seq[Char]]) : Seq[Seq[Char]] = {
-            val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
-           
+        def convertHelper(seq: Seq[Seq[Int]], insideSeq: Seq[Int], tempOut:Seq[Char], output: Seq[Seq[Char]]) : Seq[Seq[Char]] = {
+            val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao#MW&8%B@$"
+
             seq match {
                 case Seq() => output
-                // single element handle
-                case Seq(upperHead) => insideSeq match {
-                    case Seq() => convertHelper(Seq(), Seq(), 0, tempOut, output :+ (tempOut :+ '\n'))
-                    case (head +: tail) => head match {
-                        case head if (head >= (index*4)-4 && head < index*4) => 
-                            convertHelper(seq, tail, 0, tempOut :+ encodeStr(index) :+ encodeStr(index) :+ encodeStr(index), output)
-                        case _ => convertHelper(seq, insideSeq, index+1, tempOut, output)
-                    }
+                case Seq(head) => head match {
+                    case Seq() => convertHelper(Seq(), Seq(), tempOut, output)
+                    case _ => convertHelper(seq)
                 }
-                // multiple element handle
-                case (upperHead +: upperTail) => insideSeq match {
-                    case Seq() => convertHelper(upperTail, upperTail.head, 0, Seq.empty[Char], output :+ (tempOut :+ '\n'))
-                    case (head +: tail) => head match {
-                        case head if (head >= (index*4)-4 && head < index*4) => 
-                            convertHelper(seq, tail, 0, tempOut :+ encodeStr(index) :+ encodeStr(index) :+ encodeStr(index), output)
-                        case _ => convertHelper(seq, insideSeq, index+1, tempOut, output)
-                    }
-                }
-
             }
         }
         convertHelper(seq, seq.head, 0, Seq.empty[Char], Seq.empty[Seq[Char]])
