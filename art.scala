@@ -29,42 +29,22 @@ object ASCIIart extends App{
         matrixHelper(img, 0, 0, Seq.empty[Int], Seq.empty[Seq[Int]])
     }
 
-    def matrixConvert(seq:Seq[Seq[Int]]): Seq[Seq[Char]] = {
-        @tailrec
-        def convertHelper(seq: Seq[Seq[Int]], insideSeq: Seq[Int], tempOut: Seq[Char], output: Seq[Seq[Char]]) : Seq[Seq[Char]] = {
-            val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
-           
-            seq match {
-                case Seq() => output
-                // single element handler
-                case Seq(upperHead) => insideSeq match {
-                    case Seq() => convertHelper(Seq(), Seq(), tempOut, output :+ (tempOut :+ '\n'))
-                    case (head +: tail) => convertHelper(seq, tail, tempOut :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt), output)
-                    }
-                // multiple element handler
-                case (upperHead +: upperTail) => insideSeq match {
-                    case Seq() => convertHelper(upperTail, upperTail.head, Seq.empty[Char], output :+ (tempOut :+ '\n'))
-                    case (head +: tail) => convertHelper(seq, tail, tempOut :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt) :+ encodeStr((head/4).ceil.toInt), output)
-                    }
-
-            }
-        }
-        convertHelper(seq, seq.head, Seq.empty[Char], Seq.empty[Seq[Char]])
+    def matrixConvert(seq:Seq[Seq[Int]]): Seq[Seq[String]] = {
+        val encodeStr= "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+        val singleCharMatrix = seq.map(n => n.map (k => encodeStr((k/4).ceil.toInt)))
+        singleCharMatrix.map(n => n.map (k => (k.toString)*3))    
     }
 
-    def printMatrix[A](seq: Seq[Seq[A]]): Unit = {
-        @tailrec
-        def printHelper(seq: Seq[Seq[A]], tempSeq: Seq[A]:  Unit = seq.tail.isEmpty match {
-            case true => {
-                print(seq.head.mkString(""))
-                return ()
-            }
-            case false => {
-                print(tempSeq.mkString(""))
-                printHelper(seq.tail, seq.tail.head)
-            }
+    def printMatrix[A](seq: Seq[Seq[A]]): Unit = seq match {
+        case Seq() => return ()
+        case Seq(single) => {
+            print("\n" + single.mkString("") + "\n\n")
+            return ()
         }
-        printHelper(seq, seq.head)
+        case (head +: tail) => {
+            print("\n" + head.mkString(""))
+            printMatrix(tail)
+        }
     }
 
     val brightnessMatrix = getBrightnessMatrix(img)
